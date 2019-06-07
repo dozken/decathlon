@@ -1,5 +1,7 @@
 ### intelij
 .idea
+*.ipr
+*.iws
 
 
 ### maven
