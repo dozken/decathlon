@@ -9,10 +9,14 @@ public class AthleteScore {
     public AthleteScore() {
     }
 
-    public AthleteScore(String place, Integer score, AthleteResult athleteResult) {
-        this.place = place;
+    public AthleteScore(Integer score, AthleteResult athleteResult) {
         this.score = score;
         this.athleteResult = athleteResult;
+    }
+
+    public AthleteScore(String place, Integer score, AthleteResult athleteResult) {
+        this(score, athleteResult);
+        this.place = place;
     }
 
     public String getPlace() {

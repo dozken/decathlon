@@ -1,5 +1,7 @@
 package com.dozken.utils;
 
+import java.util.regex.Pattern;
+
 public class StringUtils {
 
     public static boolean isNotEmpty(final String str)
@@ -21,6 +23,6 @@ public class StringUtils {
     }
 
     public static boolean isNotTime(String str) {
-        return !str.matches("^(\\d\\d:\\d\\d:\\d\\d)");
+        return !Pattern.matches("^\\d{1,2}(\\.)\\d{1,2}(\\.)\\d{1,2}$", str);
     }
 }

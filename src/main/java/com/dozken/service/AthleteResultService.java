@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 public interface AthleteResultService {
-    
+
     List<AthleteResult> getResults(Path inputFilePath);
 
     List<AthleteScore> getScores(List<AthleteResult> athleteResults);

@@ -10,9 +10,10 @@ import com.dozken.model.enums.Parameter;
 import com.dozken.repository.AthleteResultRepository;
 import com.dozken.service.AthleteResultService;
 
-import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -28,22 +29,30 @@ public class AthleteResultServiceImpl implements AthleteResultService {
     /**
      * Points = INT(A(B — P)C) for track events (faster time produces a higher score)
      * Points = INT(A(P — B)C) for field events (greater distance or height produces a higher score)
-     *
-     * */
-    private AthleteScore toAthleteScore(AthleteResult athleteResult) {
+     */
+    private int calculateEventPoint(EventResult x) {
+        Event event = x.getEvent();
+        Parameter param = Constants.POINTS_SYSTEM.get(event);
+        int point = 0;
+        if (event.getType() == EventType.TRACK) {
+            point = (int) (param.getA() * Math.pow(param.getB() - x.getResult(), param.getC()));
+        } else if (event.getType() == EventType.FIELD) {
+            Double result = x.getResult();
+            if (Arrays.asList(Event.LONG_JUMP, Event.HIGH_JUMP, Event.POLE_VAULT).contains(event))
+                result *= 100;
+            point = (int) (param.getA() * Math.pow(result - param.getB(), param.getC()));
+        }
+        x.setPoint(point);
+        return point;
+    }
+
+
+    private AthleteScore calculateScore(AthleteResult athleteResult) {
         List<EventResult> eventResults = athleteResult.getEventResults();
 
-        BigDecimal score = eventResults.stream().map(x -> {
-            Event event = x.getEvent();
-            if(event.getType() == EventType.TRACK){
-                Parameter param = Constants.POINTS_SYSTEM.get(event);
-                double scoreD = param.getA() * Math.pow(param.getB() - x.getResult(), param.getC());
-            }
-            Constants.POINTS_SYSTEM.get(event);
-            return BigDecimal.ZERO;
-        }).reduce(BigDecimal.ZERO, BigDecimal::add);
+        Integer score = eventResults.stream().mapToInt(this::calculateEventPoint).sum();
 
-        return new AthleteScore();
+        return new AthleteScore(score, athleteResult);
     }
 
     @Override
@@ -57,11 +66,32 @@ public class AthleteResultServiceImpl implements AthleteResultService {
 
     @Override
     public List<AthleteScore> getScores(List<AthleteResult> athleteResults) {
-        //TODO
-        // - toAthleteScore scores
+        Comparator<AthleteScore> scoreComparator = (x, y) -> Integer.compare(y.getScore(), x.getScore());
 
-        return athleteResults.stream().map(this::toAthleteScore).collect(toList());
+        List<AthleteScore> athleteScores = athleteResults.stream().map(this::calculateScore)
+                .sorted(scoreComparator)
+                .collect(toList());
+
+
+        for (int i = 0; i < athleteScores.size(); i++) {
+
+            int sharedPlace = i;
+            while (sharedPlace < athleteScores.size() && athleteScores.get(i).getScore() == athleteScores.get(sharedPlace).getScore()) {
+                sharedPlace++;
+            }
+
+            if (sharedPlace != i) {
+                for (int j = i; j < sharedPlace; j++) {
+                    athleteScores.get(j).setPlace((i + 1) + "-" + (sharedPlace));
+                }
+            } else {
+                athleteScores.get(i).setPlace(String.valueOf(i + 1));
+            }
+        }
+
+        return athleteScores;
     }
+
 
     @Override
     public void exportScores(List<AthleteScore> athleteScores, Path outputFile) {

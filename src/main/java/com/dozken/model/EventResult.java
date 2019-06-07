@@ -8,6 +8,8 @@ public class EventResult {
 
     private Event event;
     private Double result;
+    private Integer point;
+
 
     public EventResult(Event event, Double result) {
         this.event = event;
@@ -21,6 +23,14 @@ public class EventResult {
 
     public Double getResult() {
         return result;
+    }
+
+    public Integer getPoint() {
+        return point;
+    }
+
+    public void setPoint(Integer point) {
+        this.point = point;
     }
 
     public static EventResult valueOf(Event event, String result) {

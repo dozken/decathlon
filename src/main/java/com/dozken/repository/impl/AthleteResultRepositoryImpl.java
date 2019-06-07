@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +29,9 @@ public class AthleteResultRepositoryImpl implements AthleteResultRepository {
         List<AthleteResult> list = new ArrayList<>();
 
         try (Stream<String> stream = Files.lines(path)) {
-            list = stream.map(this::mapToAthleteResult).collect(toList());
+            list = stream
+                    .filter(x -> !x.trim().isEmpty())
+                    .map(this::mapToAthleteResult).collect(toList());
         } catch (IOException ex) {
             throw new RuntimeException("Exception while reading file.", ex);
         }
@@ -37,9 +40,10 @@ public class AthleteResultRepositoryImpl implements AthleteResultRepository {
     }
 
     private AthleteResult mapToAthleteResult(String line) {
-        String[] data = line.split(CSV_SEPERATOR);
-        if (data.length != DECATHLON_EVENTS_SIZE) {
-            throw new RuntimeException("Athlete`s sport events size is not: " + DECATHLON_EVENTS_SIZE);
+        String[] data = line.trim().split(CSV_SEPERATOR);
+        // +1 for name column
+        if (data.length != DECATHLON_EVENTS_SIZE + 1) {
+            throw new RuntimeException("Athlete`s: " + data[0] + ", sport events size is not: " + DECATHLON_EVENTS_SIZE);
         }
         if (StringUtils.isEmpty(data[0])) {
             throw new IllegalArgumentException("Athlete`s name was not specified");
@@ -53,7 +57,12 @@ public class AthleteResultRepositoryImpl implements AthleteResultRepository {
             throw new IllegalArgumentException("Athlete`s result data is not correct");
         }
 
-        Double run1500mSeconds = new BigDecimal(LocalTime.parse(data[10], DateTimeFormatter.ofPattern("HH.mm.ss")).toSecondOfDay());
+        Double run1500mSeconds = 0.0;
+        try {
+            run1500mSeconds = toSeconds(data[10]);
+        } catch (DateTimeParseException ex) {
+            throw new RuntimeException("Could not parse: ", ex);
+        }
 
         AthleteResult athleteResult = new AthleteResult();
         athleteResult.setFullname(data[0]);
@@ -71,6 +80,18 @@ public class AthleteResultRepositoryImpl implements AthleteResultRepository {
         );
 
         return athleteResult;
+    }
+
+    private double toSeconds(String run1500mSeconds) {
+        String[] data = run1500mSeconds.split("\\.");
+        if (data.length == 2) {
+            return Double.valueOf(run1500mSeconds);
+        } else if (data.length == 3) {
+            Integer minutes = Integer.parseInt(data[0]);
+            return minutes * 60 + Double.valueOf(data[1] + "." + data[2]);
+        } else {
+            throw new RuntimeException("Cannot parse string time to seconds.");
+        }
     }
 
 }
