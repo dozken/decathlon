@@ -73,7 +73,7 @@ class AthleteResultServiceImplTest {
     @Test
     void getScores() {
         //GIVEN
-        Path inputFilePath = Paths.get("src/test/resources/clark_kent_results.csv");
+        Path inputFilePath = Paths.get("src/test/resources/clark_kent2_results.csv");
         List<AthleteResult> results = service.getResults(inputFilePath);
 
         //WHEN
@@ -95,9 +95,6 @@ class AthleteResultServiceImplTest {
         assertTrue(actual.getScore() >= 9990);
 
         assertEquals("1" , actual.getPlace());
-
-
-
     }
 
     @Test

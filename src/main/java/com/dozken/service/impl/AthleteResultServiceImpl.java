@@ -71,8 +71,15 @@ public class AthleteResultServiceImpl implements AthleteResultService {
         List<AthleteScore> athleteScores = athleteResults.stream().map(this::calculateScore)
                 .sorted(scoreComparator)
                 .collect(toList());
+        
+        calculateRanking(athleteScores);
 
 
+        return athleteScores;
+    }
+
+    private void calculateRanking(List<AthleteScore> athleteScores) {
+        // TODO fix ranking
         for (int i = 0; i < athleteScores.size(); i++) {
 
             int sharedPlace = i;
@@ -88,8 +95,6 @@ public class AthleteResultServiceImpl implements AthleteResultService {
                 athleteScores.get(i).setPlace(String.valueOf(i + 1));
             }
         }
-
-        return athleteScores;
     }
 
 
