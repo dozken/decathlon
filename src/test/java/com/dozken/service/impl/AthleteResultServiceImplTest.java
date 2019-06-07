@@ -94,6 +94,8 @@ class AthleteResultServiceImplTest {
 
         assertTrue(actual.getScore() >= 9990);
 
+        assertEquals("1" , actual.getPlace());
+
 
 
     }

@@ -80,7 +80,7 @@ public class AthleteResultServiceImpl implements AthleteResultService {
                 sharedPlace++;
             }
 
-            if (sharedPlace != i) {
+            if (sharedPlace != i+1) {
                 for (int j = i; j < sharedPlace; j++) {
                     athleteScores.get(j).setPlace((i + 1) + "-" + (sharedPlace));
                 }
