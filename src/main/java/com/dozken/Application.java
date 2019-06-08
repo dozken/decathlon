@@ -12,7 +12,6 @@ import com.dozken.service.impl.AthleteScoreServiceImpl;
 import com.dozken.service.impl.DecathlonServiceImpl;
 
 public class Application {
-
     private final AthleteResultRepository resultRepository;
     private final AthleteResultService resultService;
     private final DecathlonService decathlonService;

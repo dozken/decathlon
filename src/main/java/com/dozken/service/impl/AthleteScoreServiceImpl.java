@@ -21,7 +21,7 @@ import static java.util.stream.Collectors.toList;
 
 public class AthleteScoreServiceImpl implements AthleteScoreService {
 
-    private AthleteScoreRepository repository;
+    private final AthleteScoreRepository repository;
 
     public AthleteScoreServiceImpl(AthleteScoreRepository repository) {
         this.repository = repository;

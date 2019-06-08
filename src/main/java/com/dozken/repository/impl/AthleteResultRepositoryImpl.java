@@ -20,6 +20,7 @@ import static com.dozken.constants.Constants.DECATHLON_EVENTS_SIZE;
 import static java.util.stream.Collectors.toList;
 
 public class AthleteResultRepositoryImpl implements AthleteResultRepository {
+
     @Override
     public List<AthleteResult> getAll(Path path) {
         List<AthleteResult> list;

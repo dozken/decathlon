@@ -10,7 +10,7 @@ import java.util.List;
 
 public class AthleteResultServiceImpl implements AthleteResultService {
 
-    private AthleteResultRepository repository;
+    private final AthleteResultRepository repository;
 
     public AthleteResultServiceImpl(AthleteResultRepository repository) {
         this.repository = repository;
