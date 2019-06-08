@@ -3,13 +3,15 @@ package com.dozken.model;
 import com.dozken.model.base.AbstractModel;
 import com.dozken.model.enums.Event;
 
-public class EventResult extends AbstractModel {
+public class EventScore extends AbstractModel {
     private Event event;
     private Double result;
+    private Integer score;
 
-    private EventResult(Event event, Double result) {
+    public EventScore(Event event, Double result, int score) {
         this.event = event;
         this.result = result;
+        this.score = score;
     }
 
     public void setEvent(Event event) {
@@ -28,11 +30,11 @@ public class EventResult extends AbstractModel {
         return result;
     }
 
-    public static EventResult valueOf(Event event, String result) {
-        return new EventResult(event, Double.valueOf(result));
+    public Integer getScore() {
+        return score;
     }
 
-    public static EventResult valueOf(Event event, Double result) {
-        return new EventResult(event, result);
+    public void setScore(Integer score) {
+        this.score = score;
     }
 }

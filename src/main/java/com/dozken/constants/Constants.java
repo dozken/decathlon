@@ -1,13 +1,11 @@
 package com.dozken.constants;
 
 import com.dozken.model.enums.Event;
-import com.dozken.model.enums.Parameter;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Constants {
-
     public static final Map<Event, Parameter> POINTS_SYSTEM = new HashMap<>();
 
     static {
@@ -23,7 +21,7 @@ public class Constants {
         POINTS_SYSTEM.put(Event.RUN_1500M, new Parameter(0.03768d, 480d, 1.85d));
     }
 
-    public static final String CSV_SEPERATOR = ";";
+    public static final String CSV_SEPARATOR = ";";
 
     public static final int DECATHLON_EVENTS_SIZE = 10;
 

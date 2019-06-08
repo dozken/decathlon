@@ -1,22 +1,27 @@
 package com.dozken.model;
 
-public class AthleteScore {
+import com.dozken.model.base.AbstractModel;
 
+import javax.xml.bind.annotation.XmlElement;
+import java.util.List;
+
+public class AthleteScore extends AbstractModel {
     private String place;
     private Integer score;
-    private AthleteResult athleteResult;
+    private String fullName;
+    private List<EventScore> eventScores;
 
     public AthleteScore() {
     }
 
-    public AthleteScore(Integer score, AthleteResult athleteResult) {
+    public AthleteScore(String fullName, List<EventScore> eventScores, Integer score) {
+        this.fullName = fullName;
+        this.eventScores = eventScores;
         this.score = score;
-        this.athleteResult = athleteResult;
     }
 
-    public AthleteScore(String place, Integer score, AthleteResult athleteResult) {
-        this(score, athleteResult);
-        this.place = place;
+    public void setScore(Integer score) {
+        this.score = score;
     }
 
     public String getPlace() {
@@ -31,15 +36,21 @@ public class AthleteScore {
         return score;
     }
 
-    public void setScore(Integer score) {
-        this.score = score;
+    public String getFullName() {
+        return fullName;
     }
 
-    public AthleteResult getAthleteResult() {
-        return athleteResult;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
-    public void setAthleteResult(AthleteResult athleteResult) {
-        this.athleteResult = athleteResult;
+    public List<EventScore> getEventScores() {
+        return eventScores;
     }
+
+    @XmlElement(name = "eventScore")
+    public void setEventScores(List<EventScore> eventScores) {
+        this.eventScores = eventScores;
+    }
+
 }

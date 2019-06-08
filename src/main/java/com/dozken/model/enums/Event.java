@@ -1,7 +1,6 @@
 package com.dozken.model.enums;
 
 public enum Event {
-
     SPRINT_100M(EventType.TRACK),
     LONG_JUMP(EventType.FIELD),
     SHORT_PUT(EventType.FIELD),

@@ -3,17 +3,15 @@ package com.dozken.model;
 import java.util.List;
 
 public class AthleteResult {
-
-    private String fullname;
+    private String fullName;
     private List<EventResult> eventResults;
 
-
-    public String getFullname() {
-        return fullname;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public List<EventResult> getEventResults() {

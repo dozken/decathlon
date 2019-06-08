@@ -1,10 +1,14 @@
 package com.dozken;
 
 import com.dozken.repository.AthleteResultRepository;
+import com.dozken.repository.AthleteScoreRepository;
 import com.dozken.repository.impl.AthleteResultRepositoryImpl;
+import com.dozken.repository.impl.AthleteScoreRepositoryImpl;
 import com.dozken.service.AthleteResultService;
+import com.dozken.service.AthleteScoreService;
 import com.dozken.service.DecathlonService;
 import com.dozken.service.impl.AthleteResultServiceImpl;
+import com.dozken.service.impl.AthleteScoreServiceImpl;
 import com.dozken.service.impl.DecathlonServiceImpl;
 
 public class Application {
@@ -12,11 +16,15 @@ public class Application {
     private final AthleteResultRepository resultRepository;
     private final AthleteResultService resultService;
     private final DecathlonService decathlonService;
+    private final AthleteScoreService scoreService;
+    private final AthleteScoreRepository scoreRepository;
 
-    public Application() {
+    private Application() {
+        scoreRepository = new AthleteScoreRepositoryImpl();
         resultRepository = new AthleteResultRepositoryImpl();
         resultService = new AthleteResultServiceImpl(resultRepository);
-        decathlonService = new DecathlonServiceImpl(resultService);
+        scoreService = new AthleteScoreServiceImpl(scoreRepository);
+        decathlonService = new DecathlonServiceImpl(resultService, scoreService);
     }
 
     public static void main(String[] args) {

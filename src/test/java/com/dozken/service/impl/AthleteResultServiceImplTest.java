@@ -1,14 +1,17 @@
 package com.dozken.service.impl;
 
 import com.dozken.model.AthleteResult;
-import com.dozken.model.AthleteScore;
 import com.dozken.model.EventResult;
 import com.dozken.model.enums.Event;
-import com.dozken.model.enums.EventType;
 import com.dozken.repository.AthleteResultRepository;
+import com.dozken.repository.AthleteScoreRepository;
 import com.dozken.repository.impl.AthleteResultRepositoryImpl;
+import com.dozken.repository.impl.AthleteScoreRepositoryImpl;
 import com.dozken.service.AthleteResultService;
+import com.dozken.service.AthleteScoreService;
+import com.dozken.utils.StringUtils;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,24 +21,28 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AthleteResultServiceImplTest {
 
-    private AthleteResultService service;
+    private AthleteResultService resultService;
+    private AthleteScoreService scoreService;
     private AthleteResult expected;
-    
+
     @BeforeEach
     void setUp() {
-        AthleteResultRepository repo = new AthleteResultRepositoryImpl();
-        service = new AthleteResultServiceImpl(repo);
+        AthleteResultRepository resultRepository = new AthleteResultRepositoryImpl();
+        AthleteScoreRepository scoreRepository = new AthleteScoreRepositoryImpl();
+
+        resultService = new AthleteResultServiceImpl(resultRepository);
+        scoreService = new AthleteScoreServiceImpl(scoreRepository);
 
         expected = new AthleteResult();
-        expected.setFullname("John Smith");
+        expected.setFullName("John Smith");
         expected.setEventResults(Arrays.asList(
-                EventResult.valueOf(Event.SPRINT_100M,  12.61),
-                EventResult.valueOf(Event.LONG_JUMP,5.00),
+                EventResult.valueOf(Event.SPRINT_100M, 12.61),
+                EventResult.valueOf(Event.LONG_JUMP, 5.00),
                 EventResult.valueOf(Event.SHORT_PUT, 9.22),
                 EventResult.valueOf(Event.HIGH_JUMP, 1.50),
                 EventResult.valueOf(Event.SPRINT_400M, 60.39),
@@ -43,7 +50,7 @@ class AthleteResultServiceImplTest {
                 EventResult.valueOf(Event.DISCUS_THROW, 21.60),
                 EventResult.valueOf(Event.POLE_VAULT, 2.60),
                 EventResult.valueOf(Event.JAVELIN_THROW, 35.81),
-                EventResult.valueOf(Event.RUN_1500M,  toSeconds("5.25.72"))));
+                EventResult.valueOf(Event.RUN_1500M, StringUtils.toSeconds("5.25.72"))));
     }
 
     @AfterEach
@@ -59,10 +66,10 @@ class AthleteResultServiceImplTest {
     void getResults() {
         //GIVEN
         Path inputFilePath = Paths.get("src/test/resources/results.csv");
-        List<AthleteResult> results = service.getResults(inputFilePath);
+        List<AthleteResult> results = resultService.getResults(inputFilePath);
 
         //WHEN
-        Optional<AthleteResult> optionalAthleteResult = results.stream().filter(x -> x.getFullname().equals(expected.getFullname())).findFirst();
+        Optional<AthleteResult> optionalAthleteResult = results.stream().filter(x -> x.getFullName().equals(expected.getFullName())).findFirst();
 
         //THEN
         assertTrue(optionalAthleteResult.isPresent());
@@ -71,47 +78,9 @@ class AthleteResultServiceImplTest {
     }
 
     @Test
-    void getScores() {
-        //GIVEN
-        Path inputFilePath = Paths.get("src/test/resources/clark_kent2_results.csv");
-        List<AthleteResult> results = service.getResults(inputFilePath);
+    void givenEmptyInputPathWhenGetResultsThenException() {
+        Assertions.assertThrows(RuntimeException.class, () -> resultService.getResults(null));
 
-        //WHEN
-        List<AthleteScore> scores = service.getScores(results);
-
-        //THEN
-        Optional<AthleteScore> optionalAthleteScore = scores.stream().filter(x -> x.getAthleteResult().getFullname().equals("Clark Kent")).findFirst();
-        assertTrue(optionalAthleteScore.isPresent());
-        AthleteScore actual = optionalAthleteScore.get();
-
-        assertNotNull(actual.getAthleteResult());
-        assertTrue(actual.getAthleteResult().getEventResults().size() == 10);
-        List<EventResult> eventResults = actual.getAthleteResult().getEventResults();
-        eventResults.forEach(eventResult -> {
-            System.out.println(eventResult.getEvent()+ " " + eventResult.getPoint());
-            assertTrue(eventResult.getPoint() > 990);
-        });
-
-        assertTrue(actual.getScore() >= 9990);
-
-        assertEquals("1" , actual.getPlace());
     }
-
-    @Test
-    void exportScores() {
-    }
-
-    private double toSeconds(String run1500mSeconds) {
-        String[] data = run1500mSeconds.split("\\.");
-        if (data.length == 2) {
-            return Double.valueOf(run1500mSeconds);
-        } else if (data.length == 3) {
-            Integer minutes = Integer.parseInt(data[0]);
-            return minutes * 60 + Double.valueOf(data[1] + "." + data[2]);
-        } else {
-            throw new RuntimeException("Cannot parse string time to seconds.");
-        }
-    }
-
 
 }

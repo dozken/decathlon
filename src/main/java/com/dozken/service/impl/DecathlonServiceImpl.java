@@ -3,6 +3,7 @@ package com.dozken.service.impl;
 import com.dozken.model.AthleteResult;
 import com.dozken.model.AthleteScore;
 import com.dozken.service.AthleteResultService;
+import com.dozken.service.AthleteScoreService;
 import com.dozken.service.DecathlonService;
 import com.dozken.utils.StringUtils;
 
@@ -13,9 +14,11 @@ import java.util.List;
 public class DecathlonServiceImpl implements DecathlonService {
 
     private final AthleteResultService resultService;
+    private final AthleteScoreService scoreService;
 
-    public DecathlonServiceImpl(AthleteResultService resultService) {
+    public DecathlonServiceImpl(AthleteResultService resultService, AthleteScoreService scoreService) {
         this.resultService = resultService;
+        this.scoreService = scoreService;
     }
 
     @Override
@@ -31,8 +34,8 @@ public class DecathlonServiceImpl implements DecathlonService {
         Path outputFile = Paths.get(outputFilePath);
 
         List<AthleteResult> athleteResults = resultService.getResults(inputFile);
-        List<AthleteScore> athleteScores = resultService.getScores(athleteResults);
-        resultService.exportScores(athleteScores, outputFile);
+        List<AthleteScore> athleteScores = scoreService.getScores(athleteResults);
+        scoreService.export(athleteScores, outputFile);
     }
 
 }

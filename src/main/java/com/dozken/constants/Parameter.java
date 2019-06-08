@@ -1,4 +1,4 @@
-package com.dozken.model.enums;
+package com.dozken.constants;
 
 public class Parameter {
 
@@ -6,10 +6,10 @@ public class Parameter {
     private Double b;
     private Double c;
 
-    public Parameter(double a, double b, double c) {
-        this.a = Double.valueOf(a);
-        this.b = Double.valueOf(b);
-        this.c = Double.valueOf(c);
+    Parameter(double a, double b, double c) {
+        this.a = a;
+        this.b = b;
+        this.c = c;
     }
 
     public Double getA() {
