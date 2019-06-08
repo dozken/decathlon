@@ -3,8 +3,10 @@ package com.dozken.model;
 import com.dozken.model.base.AbstractModel;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 import java.util.List;
 
+@XmlType(propOrder = {"fullName", "score", "place", "eventScores"})
 public class AthleteScore extends AbstractModel {
     private String place;
     private Integer score;

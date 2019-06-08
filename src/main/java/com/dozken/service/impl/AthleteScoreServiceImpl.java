@@ -43,7 +43,7 @@ public class AthleteScoreServiceImpl implements AthleteScoreService {
         if (athleteScores == null || athleteScores.isEmpty()) {
             throw new RuntimeException("To export athlete scores, 'athleteScores' must not be empty");
         }
-        if (outputFile == null || Files.notExists(outputFile.getParent())) {
+        if (outputFile == null || outputFile.getParent() == null || Files.notExists(outputFile.getParent())) {
             throw new RuntimeException("To export athlete scores, 'output path' must exist");
         }
 
